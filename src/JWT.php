@@ -66,7 +66,7 @@ class JWT
      * @uses jsonDecode
      * @uses urlsafeB64Decode
      */
-    public static function decode($jwt, $key, array $allowed_algs = array())
+    public static function decode($jwt, $key, array $allowed_algs = array(), $ignore_exp = 0)
     {
         $timestamp = is_null(static::$timestamp) ? time() : static::$timestamp;
 
@@ -130,7 +130,7 @@ class JWT
         }
 
         // Check if this token has expired.
-        if (isset($payload->exp) && ($timestamp - static::$leeway) >= $payload->exp) {
+        if (!$ignore_exp && isset($payload->exp) && ($timestamp - static::$leeway) >= $payload->exp) {
             throw new ExpiredException('Expired token');
         }
 
